@@ -8,16 +8,12 @@ router.get('/test', function(req, res) {
     res.status(200).send('Hello world');
 });
 
-router.get('/list', function(req, res) {
-    res.status(200).send('Get all tickets');
-});
-
 app.get("/", function(req, res) {
     res.send("Welcome to my tickets app");
 });
 
 app.use('/api', router);
-app.use('/rest',)
+app.use('/rest', router)
 
 app.listen(port, function(err) {
     if (err) {
