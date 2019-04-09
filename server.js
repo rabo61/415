@@ -3,9 +3,18 @@ var chalk = require('chalk');
 var app = express();
 var router = express.Router();
 var port = process.env.PORT || 3000;
+var tickets = ;
 
 router.get('/test', function(req, res) {
     res.status(200).send('Hello world');
+});
+
+router.get('/list', function(req, res) {
+    res.status(200).send('Get all tickets');
+});
+
+router.post('/ticket', function(req, res) {
+    
 });
 
 app.get("/", function(req, res) {
