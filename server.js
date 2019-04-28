@@ -1,37 +1,68 @@
-var express = require('express');
-var chalk = require('chalk');
-var app = express();
-var router = express.Router();
-var port = process.env.PORT || 3000;
-var tickets = ;
+const express = require('express');
+const app = express();
+const router = express.Router();
+var port = process.env.PORT || 8080;
+const tickets ;
 
-router.get('/test', function(req, res) {
-    res.status(200).send('Hello world');
+app.get("/", (req, res)=>{
+    res.send('Hello')
 });
 
-router.get('/list', function(req, res) {
-    res.status(200).send('Get all tickets');
+// list of ticket
+router.get('/list', (req, res)=>{
+    res.send(tickets);
 });
 
-router.get('/ticket/id', function(req, res) {
-    res.status(200).send('Get single ticket');
-});
-
-router.post('/ticket', function(req, res) {
-    
-});
-
-app.get("/", function(req, res) {
-    res.send("Welcome to my tickets app");
-});
-
-app.use('/api', router);
-app.use('/rest', router)
-
-app.listen(port, function(err) {
-    if (err) {
-        console.log(chalk.red(err));
-    } else {
-        console.log(chalk.blue('Magic Happens on Port 69'));
+//single ticket
+router.get('/ticket/:id', (req, res)=>{
+    const ticket = tickets.find(t => t.id === parseInt(req.params.id));
+    if(!ticket) {
+        return res.status(404).send("The ticket of given id is not Found");
     }
+});
+
+//create a ticket
+router.post('/ticket', (req,res)=>{
+    const ticket ={
+        id: tickets.length+1,
+        name: req.body.name,
+        age: parseInt(req.body.age),
+        major: req.body.major
+
+    };
+    if( !ticket.name ||
+        !ticket.age ||
+        !ticket.major
+        ){
+            return res.status(404).send('Incomplete Ticket info');
+        }
+    tickets.push(ticket);
+    res.send(ticket);    
+})
+
+//get tickets by major
+router.get('/ticket/major/:major', (req, res)=>{
+    const ticket = tickets.filter(t => t.major.toLowerCase() === req.params.major.toLowerCase());
+    console.log(ticket);
+    if(!ticket.length) {
+        return res.status(404).send('Ticket of this major is not Found');
+    }
+    res.send(ticket);
+})
+
+//get ticket by name and age
+router.get('/ticket/na/:name/:age', (req, res) =>{
+    const name = req.params.name.toLowerCase();
+    const age = parseInt(req.params.age);
+
+    const ticket = tickets.filter(t => (t.age === age && t.name.toLowerCase() === name));
+
+    if(!ticket.name || !ticket.age){
+        return res.send("Ticket of this name or age is not found")
+    }
+    res.send(ticket);
+})
+
+app.listen(port, (req, res)=>{
+console.log("Listening....." + port);
 });
